@@ -1,12 +1,23 @@
 package demo.GetPixelRgb;
 
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.provider.MediaStore.Images.Media;
+import android.util.DisplayMetrics;
 import android.util.Log;
+
+import java.io.FileNotFoundException;
+
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -14,6 +25,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class GetPixelRgb extends Activity {
+	
+	private static final int CAMERA_REQUEST = 1888;
 
 	private ImageView imgSource1, imgSource2;
 	private TextView colorTextView[];
@@ -22,7 +35,7 @@ public class GetPixelRgb extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_main);		
 		
 //		String rgbString[] = {"Red: ", "Green: ", "Blue: "};
 		String rgbString[] = {"R: ", "G: ", "B: "};
@@ -39,7 +52,19 @@ public class GetPixelRgb extends Activity {
 		imgSource1.setImageResource(R.drawable.peoples);
 
 	}
-
+	
+	public void cameraOnClick(View view) {
+		Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE); 
+        startActivityForResult(cameraIntent, CAMERA_REQUEST); 
+	}	
+	
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {  
+        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {  
+            Bitmap photo = (Bitmap) data.getExtras().get("data"); 
+            imgSource1.setImageBitmap(photo);
+        }  
+    }
+	
 	OnTouchListener imgSourceOnTouchListener = new OnTouchListener() {
 
 		@Override
